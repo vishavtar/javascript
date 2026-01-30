@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .dropdownStyle {
+        width: 200px;
+        font-family: Arial, Helvetica, sans-serif;
+        position: relative;
+      }
+      .dropdownBtnStyle {
+        background-color: coral;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+        padding-right: 15px;
+      }
+      .dropdownBtnStyle::after {
+        content: "^";
+        position: absolute;
+        right: 5px;
+      }
+      .dropdownListStyle {
+        list-style: none;
+        /* display: block; */
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        border: solid #ccc 1px;
+        border-radius: 4px;
+        display: none;
+        position: absolute;
+        li {
+          padding: 3px 5px;
+          cursor: pointer;
+        }
+      }
+      .open > .dropdownListStyle {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dropdownStyle" id="dropdown">
+      <div class="dropdownBtnStyle" id="dropdownBtn">Select Options</div>
+      <ul class="dropdownListStyle" id="dropdownList">
+        <li>Mumbai</li>
+        <li>Pune</li>
+        <li>bangalore</li>
+        <li>Hyderabad</li>
+      </ul>
+    </div>
+    <script>
+      const dropdown = document.getElementById("dropdown");
+      const dropdownBtn = document.getElementById("dropdownBtn");
+      const dropdownList = document.getElementById("dropdownList");
+      let dropdownListArray = [];
+
+      // Dropdown open and close changes
+      function showHide() {
+        const open = dropdown.classList.contains("open");
+        if (open) {
+          dropdown.classList.remove("open");
+        } else {
+          dropdown.classList.add("open");
+        }
+      }
+      dropdownBtn.addEventListener("click", () => {
+        event.stopPropagation();
+        showHide();
+      });
+      document.addEventListener("click", (event) => {
+        event.stopPropagation();
+        dropdown.classList.remove("open");
+      });
+      dropdown.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
+
+      dropdownList.addEventListener("click", (event) => {
+        let clickEvent = event.target.closest("li");
+        // dropdownBtn.innerText = "";
+        if (!dropdownListArray.includes(clickEvent.innerText)) {
+          dropdownListArray.push(clickEvent.innerText);
+        } else {
+          dropdownListArray = dropdownListArray.filter(
+            (items) => items !== clickEvent.innerText,
+          );
+        }
+        if (!dropdownListArray.length <= 0) {
+          dropdownBtn.innerText = "";
+          dropdownListArray.forEach((element, index) => {
+            let arrayCOunt = dropdownListArray.length;
+            index === arrayCOunt - 1
+              ? (dropdownBtn.innerText += " " + element)
+              : (dropdownBtn.innerText += " " + element + ",");
+          });
+        } else {
+          dropdownBtn.innerText = "Select Options";
+        }
+        console.log(dropdownListArray);
+      });
+    </script>
+  </body>
+</html>
