@@ -4,28 +4,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      .iframestyle {
+        width: 300px;
+        height: 300px;
+      }
+      .iframeCon {
+        background-color: aliceblue;
+        border: solid 1px #ffa97d;
+        justify-content: center;
+      }
+      h4 {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        font-size: 14px;
+      }
+    </style>
   </head>
   <body>
-    <!-- index.html -->
-    <div id="multiple_select"></div>
-
-    <div>This is the main content.</div>
-
-    <div id="single_select"></div>
-
-    <script>
-      fetch("dropdown/multiple_select/index.html")
-        .then((res) => res.text())
-        .then(
-          (html) =>
-            (document.getElementById("multiple_select").innerHTML = html),
-        );
-
-      fetch("dropDown/single_select/index.html")
-        .then((res) => res.text())
-        .then(
-          (html) => (document.getElementById("single_select").innerHTML = html),
-        );
-    </script>
+    <div style="display: flex; gap: 10px">
+      <div class="iframeCon">
+        <h4>Single Select</h4>
+        <iframe
+          src="dropDown/single_select/index.html"
+          frameborder="0"
+          class="iframestyle"
+        ></iframe>
+      </div>
+      <div class="iframeCon">
+        <h4>Multiple Select</h4>
+        <iframe
+          src="dropdown/multiple_select/index.html"
+          frameborder="0"
+          class="iframestyle"
+        ></iframe>
+      </div>
+      <div class="iframeCon">
+        <h4>Multiple Select And delete selected tags</h4>
+        <iframe
+          src="dropDown/multiple_select_delete/index.html"
+          frameborder="0"
+          class="iframestyle"
+        ></iframe>
+      </div>
+    </div>
   </body>
 </html>
