@@ -4,164 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <style>
-      .dropdownStyle {
-        width: 200px;
-        font-family: Arial, Helvetica, sans-serif;
-        position: relative;
-      }
-      .dropdownBtnStyle {
-        background-color: coral;
-        color: #fff;
-        font-size: 14px;
-        font-weight: bold;
-        padding: 5px;
-        border-radius: 4px;
-        cursor: pointer;
-        padding-right: 15px;
-      }
-      .dropdownBtnStyle::after {
-        content: "^";
-        position: absolute;
-        right: 5px;
-      }
-      .dropdownListStyle {
-        list-style: none;
-        /* display: block; */
-        width: 100%;
-        padding: 0;
-        margin: 0;
-        border: solid #ccc 1px;
-        border-radius: 4px;
-        display: none;
-        position: absolute;
-        li {
-          padding: 3px 5px;
-          cursor: pointer;
-        }
-      }
-      .open > .dropdownListStyle {
-        display: block;
-      }
-      .open > .dropdownBtnStyle::after {
-        transform: rotate(180deg);
-      }
-      .tagsListCon {
-        padding: 5px;
-      }
-      .selectedTags {
-        background-color: rgb(1, 100, 206);
-        border: none;
-        margin: 2px 5px;
-        padding: 5px;
-        display: flex;
-        align-items: center;
-        color: #fff;
-        border-radius: 4px;
-        i {
-          background-color: rgb(249, 77, 77);
-          height: 14px;
-          width: 14px;
-          border-radius: 10px;
-          display: inline-flex;
-          font-style: normal;
-          font-weight: bold;
-          font-size: 11px;
-          align-items: center;
-          justify-content: center;
-          margin-left: 5px;
-        }
-      }
-      .selectedItem {
-        background-color: #e5e3e3;
-      }
-    </style>
   </head>
   <body>
-    <div class="dropdownStyle" id="dropdown">
-      <div id="dropdownListCon" class="tagsListCon"></div>
-      <div class="dropdownBtnStyle" id="dropdownBtn">Select Options</div>
-      <ul class="dropdownListStyle" id="dropdownList">
-        <li>Mumbai</li>
-        <li>Pune</li>
-        <li>bangalore</li>
-        <li>Hyderabad</li>
-      </ul>
-    </div>
+    <!-- index.html -->
+    <div id="multiple_select"></div>
+
+    <div>This is the main content.</div>
+
+    <div id="single_select"></div>
+
     <script>
-      const dropdown = document.getElementById("dropdown");
-      const dropdownBtn = document.getElementById("dropdownBtn");
-      const dropdownList = document.getElementById("dropdownList");
-      const dropdownListCon = document.getElementById("dropdownListCon");
-      let selectedTags = document.getElementsByClassName("selectedTags");
-      let dropdownListArray = [];
-
-      // Dropdown open and close changes
-      function showHide() {
-        const open = dropdown.classList.contains("open");
-        if (open) {
-          dropdown.classList.remove("open");
-        } else {
-          dropdown.classList.add("open");
-        }
-      }
-      function tagListhandler(action) {
-        dropdownListCon.innerHTML += `<button class="selectedTags">${action} <i>x</i></button>`;
-      }
-      dropdownBtn.addEventListener("click", () => {
-        event.stopPropagation();
-        showHide();
-      });
-      document.addEventListener("click", (event) => {
-        event.stopPropagation();
-        dropdown.classList.remove("open");
-      });
-      dropdown.addEventListener("click", (event) => {
-        event.stopPropagation();
-      });
-
-      dropdownList.addEventListener("click", (event) => {
-        let clickEvent = event.target.closest("li");
-        // dropdownBtn.innerText = "";
-        if (!dropdownListArray.includes(clickEvent.innerText)) {
-          dropdownListArray.push(clickEvent.innerText);
-          clickEvent.classList.add("selectedItem");
-        } else {
-          dropdownListArray = dropdownListArray.filter(
-            (items) => items !== clickEvent.innerText,
-          );
-          clickEvent.classList.remove("selectedItem");
-        }
-        if (!dropdownListArray.length <= 0) {
-          dropdownBtn.innerText = "";
-          dropdownListCon.innerHTML = "";
-          dropdownListArray.forEach((element, index) => {
-            let arrayCOunt = dropdownListArray.length;
-            index === arrayCOunt - 1
-              ? (dropdownBtn.innerText += " " + element)
-              : (dropdownBtn.innerText += " " + element + ",");
-            tagListhandler(element);
-          });
-        } else {
-          dropdownBtn.innerText = "Select Options";
-          dropdownListCon.innerHTML = "";
-        }
-        // console.log(dropdownListArray);
-      });
-
-      dropdownListCon.addEventListener("click", (event) => {
-        dropdownListCon.innerHTML = "";
-        let tagsBtn = event.target.closest("button").innerText;
-        tagsBtn = tagsBtn.replace("x", "").trim();
-        console.log(tagsBtn);
-        dropdownListArray = dropdownListArray.filter(
-          (item) => item !== tagsBtn,
+      fetch("dropdown/multiple_select/index.html")
+        .then((res) => res.text())
+        .then(
+          (html) =>
+            (document.getElementById("multiple_select").innerHTML = html),
         );
-        dropdownListArray.forEach((element) => {
-          console.log(element);
-          tagListhandler(element);
-        });
-      });
+
+      fetch("dropDown/single_select/index.html")
+        .then((res) => res.text())
+        .then(
+          (html) => (document.getElementById("single_select").innerHTML = html),
+        );
     </script>
   </body>
 </html>
