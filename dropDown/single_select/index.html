@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .dropdownStyle {
+        width: 200px;
+        font-family: Arial, Helvetica, sans-serif;
+        position: relative;
+      }
+      .dropdownBtnStyle {
+        background-color: coral;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 5px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .dropdownBtnStyle::after {
+        content: "^";
+        position: absolute;
+        right: 5px;
+      }
+      .dropdownListStyle {
+        list-style: none;
+        /* display: block; */
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        border: solid #ccc 1px;
+        border-radius: 4px;
+        display: none;
+        position: absolute;
+        li {
+          padding: 3px 5px;
+          cursor: pointer;
+        }
+      }
+      .open > .dropdownListStyle {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dropdownStyle" id="dropdown">
+      <div class="dropdownBtnStyle" id="dropdownBtn">Select Options</div>
+      <ul class="dropdownListStyle" id="dropdownList">
+        <li>vishnu</li>
+        <li>khule</li>
+      </ul>
+    </div>
+    <script>
+      const dropdown = document.getElementById("dropdown");
+      const dropdownBtn = document.getElementById("dropdownBtn");
+      const dropdownList = document.getElementById("dropdownList");
+
+      // Dropdown open and close changes
+      function showHide() {
+        const open = dropdown.classList.contains("open");
+        if (open) {
+          dropdown.classList.remove("open");
+        } else {
+          dropdown.classList.add("open");
+        }
+      }
+      dropdownBtn.addEventListener("click", () => {
+        event.stopPropagation();
+        showHide();
+      });
+      document.addEventListener("click", (event) => {
+        dropdown.classList.remove("open");
+      });
+
+      dropdownList.addEventListener("click", (event) => {
+        const clickOnList = event.target.closest("li");
+        console.log(clickOnList.innerText);
+        dropdownBtn.innerText = clickOnList.innerText;
+      });
+    </script>
+  </body>
+</html>
