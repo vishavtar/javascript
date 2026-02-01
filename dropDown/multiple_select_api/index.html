@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .con {
+        border: solid 1px #ccc;
+        width: 200px;
+      }
+      .inputboxstyle {
+        background-color: azure;
+        border-bottom: solid 1px #ccc;
+      }
+      #catdataTable table td {
+        padding: 5px;
+        border: #ccc solid 1px;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="con" id="maincon">
+      <div id="selectBox" class="inputboxstyle">Select Options</div>
+      <ul id="selectOptions" style="display: none"></ul>
+    </div>
+    <div id="catdataTable"></div>
+
+    <script>
+      const maincon = document.getElementById("maincon");
+      const selectOptions = document.getElementById("selectOptions");
+      const selectBox = document.getElementById("selectBox");
+      const catdataTable = document.getElementById("catdataTable");
+      let array = [];
+      let currnetID = [];
+      let waitdata = [];
+      let subCatData = [];
+      let newData = [];
+
+      function listItems(itemsList) {
+        selectOptions.innerHTML = "";
+        itemsList.forEach((elements) => {
+          selectOptions.innerHTML += `
+                <li id=${elements.id}>${elements.name}</li>
+                `;
+        });
+      }
+
+      function listImplimation(event) {
+        if (!array.includes(event.target.innerText)) {
+          //   console.log(event.target.innerText);
+          array.push(event.target.innerText);
+          currnetID.push(event.target.id);
+        } else {
+          //   console.log(event.target.innerText);
+          array = array.filter((value) => value != event.target.innerText);
+          currnetID = currnetID.filter((value) => value != event.target.id);
+        }
+
+        selectBox.innerText = "";
+        array.forEach((element, index) => {
+          index === array.length - 1
+            ? (selectBox.innerText += " " + element)
+            : (selectBox.innerText += " " + element + ",");
+        });
+
+        if (array.length <= 0) {
+          selectBox.innerText = "Select Options";
+        }
+      }
+
+      fetch(
+        "https://www.iamtiksha.com/apis/store/public/api/v1/sub-categories",
+        {
+          method: "GET",
+        },
+      )
+        .then((res) => {
+          return res.json();
+        })
+        .then((result) => {
+          return listItems(result.data);
+        });
+
+      document.addEventListener("click", (event) => {
+        selectOptions.style.display = "none";
+      });
+
+      maincon.addEventListener("click", (event) => {
+        event.stopPropagation();
+        selectOptions.style.display = "block";
+      });
+
+      //problem
+
+      selectOptions.addEventListener("click", (event) => {
+        listImplimation(event);
+        /// main issue
+        featchCatListItems(currnetID);
+      });
+
+      function featchCatListItems(currentId) {
+        if (!currnetID.length) {
+          catdataTable.innerHTML = "";
+          return;
+        }
+
+        console.log("id", currnetID);
+        waitdata = [];
+
+        // currnetID.forEach((element, index) => {
+        //   fetch(
+        //     "https://www.iamtiksha.com/apis/store/public/api/v1/sub-categories/" +
+        //       element,
+        //     {
+        //       method: "GET",
+        //     },
+        //   )
+        //     .then((res) => res.json())
+        //     .then((result) => {
+        //       waitdata.push(result.data);
+        //     })
+        //     .then(() => {
+        //       if (index == currnetID.length - 1) {
+        //         datashow();
+        //       }
+        //     })
+        //     .catch((error) => console.log(error))
+        //     .finally(() => {});
+        // });
+        // let dat = [];
+        // Promise.all(
+        //   currnetID.forEach((element) => {
+        //     dat = fetch(
+        //       "https://www.iamtiksha.com/apis/store/public/api/v1/sub-categories/" +
+        //         element,
+        //       {
+        //         method: "GET",
+        //       },
+        //     )
+        //       .then((res) => res.json())
+        //       .then((result) => {
+        //         return result.data;
+        //       });
+        //   }),
+        // ).then((data) => {
+        //   console.log(data);
+        // });
+        lishShow(currnetID);
+        listshoeinmap(currnetID);
+      }
+      async function listshoeinmap(currnetID) {
+        try {
+          const feactch = currnetID.map((items) =>
+            fetch(
+              "https://www.iamtiksha.com/apis/store/public/api/v1/sub-categories/" +
+                items,
+              {
+                method: "GET",
+              },
+            ).then((res) => {
+              res.json();
+            }),
+          );
+          const response = await Promise.all(feactch);
+          response.forEach((element) => {
+            newData.push(...element.data.products);
+          });
+
+          datashow(newData);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      async function lishShow(ids) {
+        try {
+          for (id of ids) {
+            const featchapi = await fetch(
+              "https://www.iamtiksha.com/apis/store/public/api/v1/sub-categories/" +
+                id,
+              {
+                method: "GET",
+              },
+            );
+            const response = await featchapi.json();
+            // console.log(response.data.products);
+            waitdata.push(...response.data.products);
+          }
+          // console.log(waitdata);
+          // datashow(waitdata);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      function datashow(data) {
+        catdataTable.innerHTML = "";
+        // console.log(data);
+        catdataTable.innerHTML += `
+          <table cellpadding="0" cellspacing="0">
+            <tr><td>Product Images</td><td>Product name</td><td>Item Price</td> <td>Offer Price</td></tr>
+              ${data
+                .map(
+                  (item) =>
+                    `<tr><td><img src=${item.images[0].path} width="60" /></td><td>${item.name}</td><td>${
+                      item.regular_price
+                    }</td><td>${item.sale_price}</td></tr>`,
+                )
+                .join("")}
+            </table>
+          `;
+      }
+    </script>
+  </body>
+</html>
